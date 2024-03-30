@@ -1,0 +1,78 @@
+﻿@page
+@model TaskAppMono.Pages.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TaskItem[0].UserEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TaskItem[0].Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TaskItem[0].Details)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TaskItem[0].DueDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TaskItem[0].FrequencyType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TaskItem[0].FrequencyNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TaskItem[0].Sensative)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TaskItem[0].LastCompleted)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.TaskItem) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Details)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DueDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FrequencyType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FrequencyNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sensative)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastCompleted)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.TaskItemId">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.TaskItemId">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.TaskItemId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
