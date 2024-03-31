@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using TaskAppMono.Data;
 using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 
