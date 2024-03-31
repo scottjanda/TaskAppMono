@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using TaskAppMono.Data;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,25 +22,27 @@ builder.Services.AddAuthorization(options =>
     // By default, all incoming requests will be authorized according to the default policy.
     options.FallbackPolicy = options.DefaultPolicy;
 });
-builder.Services.AddRazorPages()
-    .AddMicrosoftIdentityUI();
+
+builder.Services.AddRazorPages().AddMicrosoftIdentityUI();
+
+// Create a SecretClient instance and add it to the service collection
+var keyVaultUrl = builder.Configuration["KeyVault:KeyVaultURL"];
+var credential = new ClientSecretCredential(builder.Configuration["KeyVault:DirectoryID"], builder.Configuration["KeyVault:ClientId"], builder.Configuration["KeyVault:ClientSecret"]);
+var secretClient = new SecretClient(new Uri(keyVaultUrl), credential);
+builder.Services.AddSingleton(secretClient);
 
 if (builder.Environment.IsProduction())
 {
-    var KeyVaultURL = builder.Configuration.GetSection("KeyVault:KeyVaultURL");
-    var KeyVaultClientId = builder.Configuration.GetSection("KeyVault:ClientId");
-    var KeyVaultClientSecret = builder.Configuration.GetSection("KeyVault:ClientSecret");
-    var KeyVaultDirectoryID = builder.Configuration.GetSection("KeyVault:DirectoryID");
-
-    var credential = new ClientSecretCredential(KeyVaultDirectoryID.Value!.ToString(), KeyVaultClientId.Value!.ToString(), KeyVaultClientSecret.Value!.ToString());
-
-    var client = new SecretClient(new Uri(KeyVaultURL.Value!.ToString()), credential);
+    builder.Services.AddDbContext<TaskAppMonoContext>((serviceProvider, options) =>
+    {
+        var connectionString = secretClient.GetSecret("PRODDBConnectionString").Value.Value.ToString();
+        options.UseSqlServer(connectionString);
+    });
 }
-
-if (builder.Environment.IsDevelopment())
+else if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddDbContext<TaskAppMonoContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'TaskAppMonoContext' not found.")));
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'TaskAppMonoContext' not found.")));
 }
 
 var app = builder.Build();
@@ -54,14 +57,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthentication();
-
 app.UseAuthorization();
-
 app.MapRazorPages();
 app.MapControllers();
-
 app.Run();
