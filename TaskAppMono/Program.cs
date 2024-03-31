@@ -10,6 +10,7 @@ using TaskAppMono.Data;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,17 +26,16 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddRazorPages().AddMicrosoftIdentityUI();
 
-// Create a SecretClient instance and add it to the service collection
-var keyVaultUrl = builder.Configuration["KeyVault:KeyVaultURL"];
-var credential = new ClientSecretCredential(builder.Configuration["KeyVault:DirectoryID"], builder.Configuration["KeyVault:ClientId"], builder.Configuration["KeyVault:ClientSecret"]);
-var secretClient = new SecretClient(new Uri(keyVaultUrl), credential);
-builder.Services.AddSingleton(secretClient);
+// Azure Key Vault
+var keyVaultUrl = new Uri(builder.Configuration.GetSection("KeyVaultURL").Value!);
+var azureCredential = new DefaultAzureCredential();
+builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCredential);
 
 if (builder.Environment.IsProduction())
 {
     builder.Services.AddDbContext<TaskAppMonoContext>((serviceProvider, options) =>
     {
-        var connectionString = secretClient.GetSecret("PRODDBConnectionString").Value.Value.ToString();
+        var connectionString = builder.Configuration.GetSection("PRODDBConnectionString").Value;
         options.UseSqlServer(connectionString);
     });
 }
