@@ -28,7 +28,7 @@ if (builder.Environment.IsProduction())
 {
     builder.Services.AddDbContext<TaskAppMonoContext>((serviceProvider, options) =>
     {
-        var connectionString = builder.Configuration.GetSection("PRODDBConnectionString").Value;
+        var connectionString = builder.Configuration.GetSection("PRODDBConnectionString").Value.ToString();
         options.UseSqlServer(connectionString);
     });
 }
