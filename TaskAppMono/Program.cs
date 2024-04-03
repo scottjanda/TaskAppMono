@@ -30,20 +30,11 @@ builder.Services.AddRazorPages().AddMicrosoftIdentityUI();
 var keyVaultUrl = new Uri(builder.Configuration.GetSection("KeyVaultURL").Value!);
 var azureCredential = new DefaultAzureCredential();
 builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCredential);
-
-if (builder.Environment.IsProduction())
+builder.Services.AddDbContext<TaskAppMonoContext>((serviceProvider, options) =>
 {
-    builder.Services.AddDbContext<TaskAppMonoContext>((serviceProvider, options) =>
-    {
-        var connectionString = builder.Configuration.GetSection("PRODDBConnectionString").Value.ToString();
-        options.UseSqlServer(connectionString);
-    });
-}
-else if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddDbContext<TaskAppMonoContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'TaskAppMonoContext' not found.")));
-}
+    var connectionString = builder.Configuration.GetSection("PRODDBConnectionString").Value.ToString();
+    options.UseSqlServer(connectionString);
+});
 
 var app = builder.Build();
 
