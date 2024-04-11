@@ -21,6 +21,16 @@ namespace TaskAppMono.Pages
 
         public IActionResult OnGet()
         {
+            TaskItem = new TaskItem
+            {
+                //UserEmail = "",
+                UserEmail = User.Identities.FirstOrDefault().Name,
+                Description = "",
+                DueDate = DateTime.Now,
+                Sensative = false,
+                FrequencyType = "Single"
+            };
+
             return Page();
         }
 
