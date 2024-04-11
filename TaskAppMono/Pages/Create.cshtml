@@ -35,17 +35,29 @@
             </div>
             <div class="form-group">
                 <label asp-for="TaskItem.FrequencyType" class="control-label"></label>
-                <input asp-for="TaskItem.FrequencyType" class="form-control" />
+                <select asp-for="TaskItem.FrequencyType" class="form-control" id="frequencyType" onchange="toggleFrequencyNumber(this)">
+                    <option value="Single">Single</option>
+                    <option value="Week">Week</option>
+                    <option value="Year">Year</option>
+                </select>
                 <span asp-validation-for="TaskItem.FrequencyType" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="TaskItem.FrequencyNumber" class="control-label"></label>
-                <input asp-for="TaskItem.FrequencyNumber" class="form-control" />
-                <span asp-validation-for="TaskItem.FrequencyNumber" class="text-danger"></span>
-            </div>
+
+            @if (Model.TaskItem.FrequencyType != "Single")
+            {
+                <div class="form-group">
+                    <label asp-for="TaskItem.FrequencyNumber" class="control-label"></label>
+                    <input asp-for="TaskItem.FrequencyNumber" class="form-control" />
+                    <span asp-validation-for="TaskItem.FrequencyNumber" class="text-danger"></span>
+                </div>
+            }
+
             <div class="form-group">
                 <label asp-for="TaskItem.Sensative" class="control-label"></label>
-                <input asp-for="TaskItem.Sensative" class="form-control" />
+                <select asp-for="TaskItem.Sensative" class="form-control">
+                    <option value="True">True</option>
+                    <option value="False">False</option>
+                </select>
                 <span asp-validation-for="TaskItem.Sensative" class="text-danger"></span>
             </div>
             <div class="form-group">
