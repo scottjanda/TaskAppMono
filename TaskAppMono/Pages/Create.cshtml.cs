@@ -28,7 +28,8 @@ namespace TaskAppMono.Pages
                 Description = "",
                 DueDate = DateTime.Now,
                 Sensative = false,
-                FrequencyType = "Single"
+                FrequencyType = "Single",
+                FrequencyNumber = 0
             };
 
             return Page();

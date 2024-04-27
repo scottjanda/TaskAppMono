@@ -33,9 +33,11 @@
                 <input asp-for="TaskItem.DueDate" class="form-control" />
                 <span asp-validation-for="TaskItem.DueDate" class="text-danger"></span>
             </div>
+
+
             <div class="form-group">
                 <label asp-for="TaskItem.FrequencyType" class="control-label"></label>
-                <select asp-for="TaskItem.FrequencyType" class="form-control" id="frequencyType" onchange="toggleFrequencyNumber(this)">
+                <select asp-for="TaskItem.FrequencyType" class="form-control" id="frequencyType" onchange="toggleFrequencyType(this)">
                     <option value="Single">Single</option>
                     <option value="Week">Week</option>
                     <option value="Year">Year</option>
@@ -46,11 +48,31 @@
             @if (Model.TaskItem.FrequencyType != "Single")
             {
                 <div class="form-group">
+                    <label asp-for="TaskItem.FrequencyType" class="control-label"></label>
+                    <input asp-for="TaskItem.FrequencyType" class="form-control" />
+                    <span asp-validation-for="TaskItem.FrequencyType" class="text-danger"></span>
+                </div>
+            }
+
+
+            <div class="form-group">
+                <label asp-for="TaskItem.FrequencyNumber" class="control-label"></label>
+                <select asp-for="TaskItem.FrequencyNumber" class="form-control" id="frequencyNumber" onchange="toggleFrequencyNumber(this)">
+                    <option value=0>0</option>
+                    <option value=1>1</option>
+                </select>
+                <span asp-validation-for="TaskItem.FrequencyNumber" class="text-danger"></span>
+            </div>
+
+            @if (Model.TaskItem.FrequencyNumber != 0)
+            {
+                <div class="form-group">
                     <label asp-for="TaskItem.FrequencyNumber" class="control-label"></label>
                     <input asp-for="TaskItem.FrequencyNumber" class="form-control" />
                     <span asp-validation-for="TaskItem.FrequencyNumber" class="text-danger"></span>
                 </div>
             }
+
 
             <div class="form-group">
                 <label asp-for="TaskItem.Sensative" class="control-label"></label>

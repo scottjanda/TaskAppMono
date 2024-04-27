@@ -29,6 +29,7 @@ namespace TaskAppMono.Pages
 
             TaskItem = await _context.TaskItem
                 .Where(item => item.UserEmail == userEmail)
+                .OrderBy(item => item.DueDate)
                 .ToListAsync();
         }
     }
