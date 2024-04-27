@@ -5,11 +5,14 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Personal Task List</h1>
 
 <p>
     <a asp-page="Create">Create New</a>
 </p>
+
+<button id="toggleSensitive">Toggle Sensitive Tasks</button>
+
 <table class="table">
     <thead>
         <tr>
@@ -41,38 +44,65 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.TaskItem) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserEmail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Details)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DueDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FrequencyType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FrequencyNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sensative)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastCompleted)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.TaskItemId">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.TaskItemId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.TaskItemId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.TaskItem)
+        {
+            <tr style="@(item.Sensative ? "" : "display:none;")">
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserEmail)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Details)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DueDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FrequencyType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FrequencyNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sensative)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastCompleted)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.TaskItemId">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.TaskItemId">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.TaskItemId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var sensitiveRows = document.querySelectorAll('tbody tr');
+
+        sensitiveRows.forEach(function (row) {
+            if (row.style.display === 'none') {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+
+    document.getElementById('toggleSensitive').addEventListener('click', function () {
+        var sensitiveRows = document.querySelectorAll('tbody tr');
+
+        sensitiveRows.forEach(function (row) {
+            if (row.style.display === 'none') {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
