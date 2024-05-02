@@ -1,9 +1,17 @@
 ﻿@page
 @model TaskAppMono.Pages.IndexModel
 
+@inject IAntiforgery antiforgery
+@{
+    var token = antiforgery.GetAndStoreTokens(HttpContext).RequestToken;
+}
+
 @{
     ViewData["Title"] = "Index";
 }
+
+@* need for antiforgery tolken *@
+<input type="hidden" name="__RequestVerificationToken" value="@token" />
 
 <h1>Personal Task List</h1>
 
@@ -72,6 +80,9 @@
                     @Html.DisplayFor(modelItem => item.LastCompleted)
                 </td>
                 <td>
+                    <button class="complete" data-task-id="@item.TaskItemId">Complete</button>
+                </td>
+                <td>
                     <a asp-page="./Edit" asp-route-id="@item.TaskItemId">Edit</a> |
                     <a asp-page="./Details" asp-route-id="@item.TaskItemId">Details</a> |
                     <a asp-page="./Delete" asp-route-id="@item.TaskItemId">Delete</a>
@@ -92,17 +103,57 @@
                 row.style.display = 'none';
             }
         });
-    });
 
-    document.getElementById('toggleSensitive').addEventListener('click', function () {
-        var sensitiveRows = document.querySelectorAll('tbody tr');
+        // Attach click event listener to "Toggle Sensitive" button
+        document.getElementById('toggleSensitive').addEventListener('click', function () {
+            var sensitiveRows = document.querySelectorAll('tbody tr');
 
-        sensitiveRows.forEach(function (row) {
-            if (row.style.display === 'none') {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+            sensitiveRows.forEach(function (row) {
+                if (row.style.display === 'none') {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Attach click event listeners to "Complete" buttons
+        var completeButtons = document.querySelectorAll('.complete');
+        completeButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                var taskId = button.getAttribute('data-task-id');
+                completeTask(taskId);
+            });
         });
     });
+
+    function completeTask(taskId) {
+
+        // Get the anti-forgery token from the hidden input field
+        var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        // Send an AJAX request to update the task
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/Index?handler=CompleteTask&id=' + taskId, true);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        // Set the anti-forgery token in the request header
+        xhr.setRequestHeader('RequestVerificationToken', token);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    // Task completed successfully
+                    // Reload the page or update the task display as needed
+                    location.reload(); // Reload the page
+                } else {
+                    // Handle error
+                    console.error('Error completing task:', xhr.responseText);
+                }
+            }
+        };
+        xhr.send();
+    }
 </script>
+
