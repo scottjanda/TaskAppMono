@@ -46,7 +46,10 @@
             </div>
             <div class="form-group">
                 <label asp-for="TaskItem.Sensative" class="control-label"></label>
-                <input asp-for="TaskItem.Sensative" class="form-control" />
+                <select asp-for="TaskItem.Sensative" class="form-control">
+                    <option value="True">True</option>
+                    <option value="False">False</option>
+                </select>
                 <span asp-validation-for="TaskItem.Sensative" class="text-danger"></span>
             </div>
             <div class="form-group">
